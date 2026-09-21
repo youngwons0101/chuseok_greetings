@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>감나무 한가위</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400&display=swap">
+<style>
+:root{
+  --sky-top:#090f24;
+  --sky-mid:#1a2347;
+  --sky-bottom:#46456f;
+  --moon:#f8e8b4;
+  --moon-glow:rgba(248,232,180,.32);
+  --text:#fbf3e4;
+  --persimmon:#e8702a;
+  --mtn-far:#2c3562;
+  --mtn-mid:#232b50;
+  --mtn-near:#1b2240;
+  --hill:#1a2a2c;
+  --hill-2:#111d1f;
+}
+html,body{height:100%}
+body{
+  margin:0;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 50%,var(--sky-bottom) 100%);
+  color:var(--text);
+  font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;
+  overflow:hidden;
+}
+.scene{
+  position:relative;
+  height:100%;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding-inline:16px;
+  padding-block:0;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+/* ── 하늘 ── */
+.stars{position:absolute;inset:0;pointer-events:none}
+.star{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--text);opacity:.5;
+  animation:twinkle var(--d,4s) ease-in-out infinite;
+  animation-delay:var(--delay,0s);
+}
+.star.big{width:3px;height:3px;box-shadow:0 0 6px var(--moon)}
+.star.warm{background:#ffe6b8}.star.cool{background:#cfe0ff}
+.star.spark{width:3px;height:3px;background:#fff;box-shadow:0 0 8px 1px rgba(255,255,255,.8)}
+.star.spark::before,.star.spark::after{content:"";position:absolute;left:50%;top:50%;translate:-50% -50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
+.star.spark::before{width:16px;height:1px}
+.star.spark::after{width:1px;height:16px}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+
+.milky{ /* 은하수 띠 */
+  position:absolute;left:-10%;top:-20%;width:120%;height:70%;
+  background:
+    radial-gradient(60% 30% at 50% 50%,rgba(200,210,255,.10),transparent 70%),
+    radial-gradient(18% 10% at 30% 46%,rgba(220,225,255,.10),transparent 70%),
+    radial-gradient(14% 8% at 62% 54%,rgba(220,225,255,.09),transparent 70%),
+    radial-gradient(10% 6% at 48% 42%,rgba(255,235,210,.08),transparent 70%),
+    radial-gradient(30% 12% at 70% 50%,rgba(180,195,255,.07),transparent 70%);
+  transform:rotate(-14deg);pointer-events:none;
+}
+.nebula{ /* 지평선 근처 옅은 보랏빛 노을 잔광 */
+  position:absolute;left:0;right:0;bottom:22%;height:30%;
+  background:linear-gradient(180deg,transparent,rgba(120,90,150,.14) 60%,rgba(150,110,140,.18));
+  pointer-events:none;
+}
+
+.shooting{
+  position:absolute;top:14%;left:12%;width:140px;height:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),#fff 60%,rgba(255,255,255,0));
+  transform:rotate(22deg);opacity:0;pointer-events:none;
+  animation:shoot 11s ease-out infinite 3s;
+}
+@keyframes shoot{
+  0%{opacity:0;transform:rotate(22deg) translateX(0)}
+  2%{opacity:1}
+  9%{opacity:0;transform:rotate(22deg) translateX(420px)}
+  100%{opacity:0;transform:rotate(22deg) translateX(420px)}
+}
+
+.moon{
+  position:absolute;left:50%;top:7%;
+  width:clamp(110px,min(22vw,24vh),240px);aspect-ratio:1;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 42% 38%,#fff9dc 0%,var(--moon) 55%,#e6cd8c 100%);
+  box-shadow:0 0 40px 14px var(--moon-glow),0 0 140px 60px rgba(248,232,180,.14);
+  pointer-events:none;
+}
+.moon::after{ /* 달 표면 얼룩 */
+  content:"";position:absolute;inset:0;border-radius:50%;
+  background:
+    radial-gradient(circle at 28% 62%,rgba(120,100,60,.09) 0 14%,transparent 15%),
+    radial-gradient(circle at 64% 28%,rgba(120,100,60,.07) 0 10%,transparent 11%),
+    radial-gradient(circle at 70% 70%,rgba(120,100,60,.07) 0 16%,transparent 17%);
+}
+.moon::before{ /* 달무리 */
+  content:"";position:absolute;inset:-28%;border-radius:50%;
+  border:1px solid rgba(248,232,180,.14);
+  box-shadow:0 0 30px rgba(248,232,180,.08),inset 0 0 30px rgba(248,232,180,.08);
+}
+.moon svg{position:absolute;inset:0;width:100%;height:100%} /* 달토끼 */
+.moon .rabbit,.moon .pestle,.moon .ear{transform-box:view-box}
+.moon .rabbit{transform-origin:40px 78px;animation:pound-body 1.6s ease-in-out infinite}
+.moon .pestle{animation:pound 1.6s infinite}
+.moon .ear{animation:ear 1.6s ease-in-out infinite}
+.moon .e1{transform-origin:43px 34px}
+.moon .e2{transform-origin:47px 34px;animation-delay:.1s}
+@keyframes pound{ /* 천천히 들었다가 탁 내려찧기 */
+  0%{transform:translateY(-7px);animation-timing-function:ease-out}
+  55%{transform:translateY(-7px);animation-timing-function:cubic-bezier(.6,0,1,.4)}
+  70%{transform:translateY(0);animation-timing-function:ease-in-out}
+  78%{transform:translateY(0)}
+  100%{transform:translateY(-7px)}
+}
+@keyframes pound-body{
+  0%,55%{transform:rotate(-2deg)}
+  70%,78%{transform:rotate(2deg) translateY(.6px)}
+  100%{transform:rotate(-2deg)}
+}
+@keyframes ear{
+  0%,55%{transform:rotate(0)}
+  70%{transform:rotate(-8deg)}
+  85%,100%{transform:rotate(0)}
+}
+
+.cloud{
+  position:absolute;height:clamp(34px,7vh,70px);width:clamp(200px,32vw,460px);
+  border-radius:100px;
+  background:
+    radial-gradient(ellipse 22% 60% at 22% 70%,rgba(230,225,255,.6),transparent 70%),
+    radial-gradient(ellipse 18% 75% at 40% 45%,rgba(230,225,255,.65),transparent 70%),
+    radial-gradient(ellipse 24% 65% at 60% 60%,rgba(230,225,255,.55),transparent 70%),
+    radial-gradient(ellipse 16% 50% at 78% 72%,rgba(230,225,255,.5),transparent 70%),
+    radial-gradient(ellipse 45% 30% at 50% 85%,rgba(230,225,255,.4),transparent 70%);
+  filter:blur(6px);opacity:.3;pointer-events:none;
+  animation:drift var(--t,90s) linear infinite;
+}
+.cloud.c1{top:14%;--t:110s}
+.cloud.c2{top:26%;--t:150s;animation-delay:-60s;opacity:.18}
+@keyframes drift{from{left:-35%}to{left:105%}}
+
+/* ── 기러기 떼 ── */
+.geese{
+  position:absolute;top:22%;left:-20%;width:clamp(120px,14vw,220px);height:auto;
+  opacity:.75;pointer-events:none;
+  animation:migrate 48s linear infinite 6s;
+}
+.geese path{transform-box:fill-box;transform-origin:50% 100%;animation:flap .9s ease-in-out infinite}
+.geese path:nth-child(2n){animation-delay:-.3s}
+.geese path:nth-child(3n){animation-delay:-.6s}
+@keyframes migrate{from{left:-20%;top:24%}to{left:105%;top:14%}}
+@keyframes flap{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.25)}}
+
+/* ── 먼 산 ── */
+.mountains{
+  position:absolute;left:0;right:0;bottom:clamp(70px,14vh,140px);
+  height:clamp(90px,24vh,240px);pointer-events:none;
+}
+.mountains svg{display:block;width:100%;height:100%}
+
+/* ── 무대 ── */
+.stage{
+  position:relative;z-index:2;
+  width:100%;max-width:1180px;margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(150px,1fr) minmax(0,1.6fr) minmax(150px,1fr);
+  align-items:end;
+  gap:24px;
+  padding-bottom:clamp(56px,11vh,110px); /* 언덕 위에 서도록 */
+}
+.tree{display:block;width:100%;max-width:min(440px,42vh);margin:0;justify-self:center;
+  transform-origin:50% 100%;
+  animation:sway 7s ease-in-out infinite;
+}
+.tree.right{transform:scaleX(-1);animation-name:sway-r;animation-delay:-3s}
+.tree svg{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+@keyframes sway{0%,100%{rotate:-.6deg}50%{rotate:.6deg}}
+@keyframes sway-r{0%,100%{transform:scaleX(-1) rotate(.6deg)}50%{transform:scaleX(-1) rotate(-.6deg)}}
+
+.greeting{
+  text-align:center;
+  align-self:center;
+  padding-block:0 clamp(8px,4vh,40px);
+  translate:0 clamp(-44px,-5vh,-16px); /* 나무 사이 중앙보다 조금 위로 */
+}
+.eyebrow{
+  margin:0 0 18px;
+  font-size:.85rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--text);font-weight:400;
+  -webkit-text-stroke:1px #000;
+  paint-order:stroke fill;
+  text-shadow:1px 1px 0 #000,-1px -1px 0 #000;
+}
+.eyebrow::before,.eyebrow::after{content:"—";margin:0 .6em;opacity:.6}
+h1{
+  margin:0;
+  font-family:"Gowun Batang","Nanum Myeongjo","Apple SD Gothic Neo",serif;
+  font-weight:700;
+  font-size:clamp(1.9rem,min(5.4vw,7vh),4.4rem);
+  line-height:1.3;
+  letter-spacing:-.01em;
+  text-wrap:balance;word-break:keep-all;
+  /* 검정 테두리: stroke를 글자 뒤에 그려 획이 얇아지지 않도록 */
+  -webkit-text-stroke:clamp(2px,.28vw,4px) #000;
+  paint-order:stroke fill;
+  text-shadow:
+    1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000,
+    0 0 24px rgba(248,232,180,.35),0 3px 6px rgba(0,0,0,.45);
+}
+h1 em{font-style:normal;color:#ffd08a}
+.sub{
+  margin:clamp(10px,2.4vh,22px) auto 0;max-width:30ch;word-break:keep-all;
+  font-size:clamp(.95rem,1.4vw,1.15rem);
+  line-height:1.8;font-weight:400;color:var(--text);
+  -webkit-text-stroke:1.5px #000;
+  paint-order:stroke fill;
+  text-shadow:1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000;
+}
+.sub b{font-weight:400;color:var(--text)}
+
+/* ── 땅 ── */
+.ground{
+  position:absolute;left:0;right:0;bottom:0;height:clamp(80px,16vh,160px);
+  pointer-events:none;z-index:1;
+}
+.ground .hills{position:absolute;inset:0;width:100%;height:100%}
+.ground .props{position:absolute;left:0;right:0;bottom:0;height:100%;width:100%}
+.hanok{
+  position:absolute;right:20%;bottom:46%;
+  width:clamp(200px,26vw,380px);height:auto;overflow:visible;
+}
+.hanok .win{animation:lamp 3s ease-in-out infinite}
+@keyframes lamp{0%,100%{opacity:.85}50%{opacity:1}}
+.hanok .smoke circle{transform-box:fill-box;transform-origin:center;animation:smoke 4.5s ease-out infinite;opacity:0}
+.hanok .smoke circle:nth-child(2){animation-delay:-1.5s}
+.hanok .smoke circle:nth-child(3){animation-delay:-3s}
+@keyframes smoke{
+  0%{transform:translate(0,14px) scale(.5);opacity:0}
+  20%{opacity:.35}
+  100%{transform:translate(8px,-22px) scale(1.6);opacity:0}
+}
+.hanok .lantern{transform-box:view-box;transform-origin:214px 58px;animation:swing 3.4s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.hanok .gotgam{transform-box:view-box;transform-origin:64px 52px;animation:swing 4s ease-in-out infinite -1s}
+.grass{
+  position:absolute;left:0;right:0;bottom:0;height:46%;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding-inline:2%;
+}
+.grass svg{height:100%;width:auto;transform-origin:50% 100%;animation:rustle 4s ease-in-out infinite}
+.grass svg:nth-child(2n){animation-delay:-1.3s}
+.grass svg:nth-child(3n){animation-delay:-2.6s;height:80%}
+@keyframes rustle{0%,100%{transform:skewX(-3deg)}50%{transform:skewX(3deg)}}
+
+/* ── 떨어지는 감 ── */
+.drops{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.drop{
+  position:absolute;overflow:visible;
+  animation:fall 2.4s forwards;
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.4));
+}
+@keyframes fall{
+  0%  {transform:translateY(0) rotate(0);opacity:1;animation-timing-function:cubic-bezier(.5,0,1,.6)}
+  62% {transform:translateY(var(--fall)) rotate(var(--rot));animation-timing-function:cubic-bezier(0,.5,.4,1)}
+  74% {transform:translateY(calc(var(--fall) - var(--bounce))) rotate(calc(var(--rot) * 1.25));animation-timing-function:cubic-bezier(.5,0,1,.6)}
+  84% {transform:translateY(var(--fall)) rotate(calc(var(--rot) * 1.35));opacity:1}
+  100%{transform:translateY(var(--fall)) rotate(calc(var(--rot) * 1.35));opacity:0}
+}
+.puff{
+  position:absolute;width:10px;height:4px;border-radius:50%;
+  background:rgba(200,190,160,.5);pointer-events:none;
+  animation:puff .5s ease-out forwards;
+}
+@keyframes puff{from{transform:scale(1);opacity:.7}to{transform:scale(3.2,1.6);opacity:0}}
+
+.fireflies{position:absolute;inset:0;pointer-events:none;z-index:3}
+.fly{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:#e9f59a;box-shadow:0 0 8px 2px rgba(220,245,140,.7);
+  opacity:0;
+  animation:hover var(--t,9s) ease-in-out infinite;animation-delay:var(--delay,0s);
+}
+@keyframes hover{
+  0%{opacity:0;transform:translate(0,0)}
+  20%{opacity:.9}
+  50%{opacity:.4;transform:translate(var(--dx,14px),-26px)}
+  80%{opacity:.9}
+  100%{opacity:0;transform:translate(calc(var(--dx,14px) * -.6),-52px)}
+}
+
+/* ── 세로 화면(폰·태블릿 세로): 인사말 위, 나무 두 그루 아래 ── */
+@media (max-width:720px), (max-width:900px) and (orientation:portrait){
+  .stage{
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    padding-bottom:clamp(40px,8vh,70px);
+  }
+  .greeting{grid-column:1/-1;grid-row:1;padding-block:0 8px;translate:0 clamp(-24px,-3vh,-8px)}
+  .tree{grid-row:2;width:min(52vw,30vh);max-width:none} /* 칸보다 커도 되게 */
+  .moon{top:3%;width:clamp(80px,min(24vw,16vh),200px)}
+  .ground{height:clamp(60px,10vh,100px)}
+  .mountains{bottom:clamp(50px,9vh,90px);height:clamp(70px,18vh,160px)}
+  .hanok{right:auto;left:50%;translate:-50% 0;bottom:48%;width:clamp(130px,38vw,220px)} /* 두 나무 사이 */
+  .grass svg:nth-child(4n+1){display:none}
+  .cloud{opacity:.22}
+  .shooting{width:90px}
+  @keyframes shoot{
+    0%{opacity:0;transform:rotate(22deg) translateX(0)}
+    2%{opacity:1}
+    9%{opacity:0;transform:rotate(22deg) translateX(220px)}
+    100%{opacity:0;transform:rotate(22deg) translateX(220px)}
+  }
+}
+/* 세로 화면인데 키가 작은 폰: 글씨를 줄여 달과 겹치지 않게 */
+@media (max-width:720px) and (max-height:700px){
+  .eyebrow{margin-bottom:8px;font-size:.75rem}
+  h1{font-size:clamp(1.5rem,6.5vw,1.9rem)}
+  .sub{font-size:.85rem;line-height:1.6;margin-top:8px}
+  .greeting{translate:0 0}
+  .tree{width:min(52vw,26vh)}
+}
+/* 가로로 눕힌 폰: 높이가 낮으니 전체를 납작하게 */
+@media (min-width:721px) and (max-height:500px){
+  .moon{top:3%;width:clamp(70px,22vh,110px)}
+  .eyebrow{margin-bottom:6px;font-size:.7rem}
+  h1{font-size:clamp(1.3rem,7vh,1.8rem);line-height:1.25}
+  .sub{font-size:.8rem;line-height:1.5;margin-top:6px}
+  .greeting{translate:0 0;align-self:end;padding-bottom:0}
+  .stage{padding-bottom:clamp(30px,10vh,56px)}
+  .tree{max-width:min(440px,46vh)}
+  .ground{height:clamp(50px,16vh,80px)}
+  .mountains{bottom:clamp(40px,12vh,70px);height:clamp(60px,22vh,120px)}
+  .hanok{right:10%;bottom:44%;width:clamp(140px,20vw,200px)}
+  .geese{top:12%}
+}
+@media (prefers-reduced-motion:reduce){
+  .tree,.star,.cloud,.shooting,.fly,.grass svg,.hanok .win,.hanok .smoke circle,.hanok .lantern,.hanok .gotgam,.geese,.geese path,.moon .rabbit,.moon .pestle,.moon .ear{animation:none}
+  .fly{opacity:.6}
+  .geese{left:60%;top:16%}
+}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="milky" aria-hidden="true"></div>
+  <div class="nebula" aria-hidden="true"></div>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="shooting" aria-hidden="true"></div>
+  <div class="cloud c1" aria-hidden="true"></div>
+  <div class="cloud c2" aria-hidden="true"></div>
+
+  <div class="moon" aria-hidden="true">
+    <!-- 떡방아 찧는 달토끼: 옆모습, 오른쪽을 보고 서서 절구질 -->
+    <svg viewBox="0 0 100 100">
+      <g fill="#8a7648" opacity=".24">
+        <g class="rabbit">
+          <circle cx="34" cy="66" r="12"/>                                  <!-- 뒷다리 허벅지 -->
+          <ellipse cx="40" cy="55" rx="9" ry="15" transform="rotate(-18 40 55)"/> <!-- 몸통 -->
+          <circle cx="26" cy="70" r="3.4"/>                                 <!-- 꼬리 -->
+          <ellipse cx="40" cy="78" rx="9" ry="3"/>                          <!-- 뒷발 -->
+          <circle cx="47" cy="39" r="7.5"/>                                 <!-- 머리 -->
+          <circle cx="53" cy="41.5" r="3.2"/>                               <!-- 주둥이 -->
+          <g class="ear e1"><ellipse cx="41" cy="26" rx="2.7" ry="10" transform="rotate(-28 41 26)"/></g>
+          <g class="ear e2"><ellipse cx="47" cy="25" rx="2.7" ry="10" transform="rotate(-8 47 25)"/></g>
+        </g>
+        <g class="pestle">
+          <rect x="60" y="30" width="4.5" height="34" rx="2.2"/>            <!-- 절굿공이 -->
+          <rect x="57" y="27" width="10.5" height="6" rx="2.5"/>
+          <ellipse cx="54" cy="50" rx="10.5" ry="3.2" transform="rotate(-10 54 50)"/> <!-- 앞발 -->
+        </g>
+        <path d="M53 63 h19 l-2.5 15 h-14z"/>                                <!-- 절구 -->
+        <rect x="51.5" y="61" width="22" height="3.5" rx="1.2"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 남쪽으로 가는 기러기 -->
+  <svg class="geese" viewBox="0 0 200 60" aria-hidden="true" fill="none" stroke="#dfe4f5" stroke-width="1.6" stroke-linecap="round">
+    <path d="M100 8 Q106 2 112 8 M100 8 Q94 2 88 8"/>
+    <path d="M84 16 Q89 11 94 16 M84 16 Q79 11 74 16"/>
+    <path d="M116 16 Q121 11 126 16 M116 16 Q111 11 106 16"/>
+    <path d="M68 24 Q73 19 78 24 M68 24 Q63 19 58 24"/>
+    <path d="M132 24 Q137 19 142 24 M132 24 Q127 19 122 24"/>
+    <path d="M52 32 Q57 27 62 32 M52 32 Q47 27 42 32"/>
+    <path d="M148 32 Q153 27 158 32 M148 32 Q143 27 138 32"/>
+    <path d="M36 40 Q41 35 46 40 M36 40 Q31 35 26 40"/>
+    <path d="M164 41 Q169 36 174 41 M164 41 Q159 36 154 41"/>
+  </svg>
+
+  <div class="mountains" aria-hidden="true">
+    <svg viewBox="0 0 1200 240" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3a4478"/><stop offset="1" stop-color="#2c3562"/>
+        </linearGradient>
+        <linearGradient id="fog1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8d9ad0" stop-opacity="0"/><stop offset=".5" stop-color="#8d9ad0" stop-opacity=".22"/><stop offset="1" stop-color="#8d9ad0" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="fog2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7c88bd" stop-opacity="0"/><stop offset=".55" stop-color="#7c88bd" stop-opacity=".28"/><stop offset="1" stop-color="#7c88bd" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- 가장 먼 산 -->
+      <path d="M0 150 L90 100 L170 130 L260 60 L340 110 L420 80 L520 140 L620 70 L700 120 L780 90 L880 150 L960 95 L1040 130 L1120 85 L1200 120 L1200 240 L0 240Z" fill="url(#mist)"/>
+      <path d="M0 150 L90 100 L170 130 L260 60 L340 110 L420 80 L520 140 L620 70 L700 120 L780 90 L880 150 L960 95 L1040 130 L1120 85 L1200 120" fill="none" stroke="#6f7bb0" stroke-width="1.5" stroke-opacity=".55"/>
+      <rect x="0" y="120" width="1200" height="60" fill="url(#fog1)"/>
+      <!-- 중간 산 -->
+      <path d="M0 190 L110 140 L200 165 L310 120 L410 170 L520 130 L610 175 L720 135 L820 180 L930 140 L1030 175 L1130 145 L1200 170 L1200 240 L0 240Z" fill="#232b50"/>
+      <path d="M0 190 L110 140 L200 165 L310 120 L410 170 L520 130 L610 175 L720 135 L820 180 L930 140 L1030 175 L1130 145 L1200 170" fill="none" stroke="#5b679c" stroke-width="1.5" stroke-opacity=".5"/>
+      <rect x="0" y="165" width="1200" height="50" fill="url(#fog2)"/>
+      <!-- 가까운 산 + 능선 나무 -->
+      <path d="M0 215 L140 185 L260 205 L400 175 L540 210 L680 180 L820 212 L960 185 L1100 210 L1200 195 L1200 240 L0 240Z" fill="#1b2240"/>
+      <g fill="#161c36">
+        <path d="M120 189 l6 -12 l6 12z M134 187 l5 -10 l5 10z M150 187 l6 -13 l6 13z M380 180 l5 -10 l5 10z M394 177 l6 -12 l6 12z M410 178 l5 -9 l5 9z M660 184 l6 -12 l6 12z M676 182 l5 -10 l5 10z M692 183 l6 -11 l6 11z M940 189 l6 -12 l6 12z M956 187 l5 -10 l5 10z M972 188 l6 -12 l6 12z M1160 200 l5 -10 l5 10z"/>
+      </g>
+      <!-- 골짜기 먼 마을 불빛 -->
+      <g fill="#ffd27a" opacity=".85">
+        <circle cx="300" cy="208" r="1.4"/><circle cx="318" cy="211" r="1.1"/><circle cx="330" cy="207" r="1.3"/>
+        <circle cx="890" cy="212" r="1.3"/><circle cx="905" cy="209" r="1.1"/>
+      </g>
+    </svg>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="fruit-shade" cx="35%" cy="32%" r="78%">
+        <stop offset="0" stop-color="#ffbe78"/>
+        <stop offset=".4" stop-color="#ee7d2e"/>
+        <stop offset=".8" stop-color="#c4501a"/>
+        <stop offset="1" stop-color="#7f2e0e"/>
+      </radialGradient>
+      <linearGradient id="bark" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#7a5637"/><stop offset=".35" stop-color="#553620"/><stop offset=".7" stop-color="#3e2614"/><stop offset="1" stop-color="#2a180b"/>
+      </linearGradient>
+      <radialGradient id="sheen" cx="50%" cy="0%" r="70%">
+        <stop offset="0" stop-color="#fff4c2" stop-opacity=".38"/>
+        <stop offset=".6" stop-color="#fff4c2" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="underside" x1="0" y1="0" x2="0" y2="1">
+        <stop offset=".45" stop-color="#0a1a10" stop-opacity="0"/>
+        <stop offset="1" stop-color="#0a1a10" stop-opacity=".55"/>
+      </linearGradient>
+      <filter id="leafy" x="-15%" y="-15%" width="130%" height="130%">
+        <feTurbulence type="fractalNoise" baseFrequency=".055" numOctaves="3" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="rough" x="-10%" y="-5%" width="120%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency=".09 .02" numOctaves="2" seed="3" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- 잎 결 무늬 -->
+      <pattern id="leafTex" width="36" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+        <g opacity=".5">
+          <use href="#leaf" fill="#6f9f4a" transform="translate(8 22) rotate(-30) scale(.55)"/>
+          <use href="#leaf" fill="#355f2c" transform="translate(24 30) rotate(25) scale(.6)"/>
+          <use href="#leaf" fill="#8bb85a" transform="translate(30 12) rotate(70) scale(.5)"/>
+          <use href="#leaf" fill="#2c4f25" transform="translate(14 10) rotate(-80) scale(.5)"/>
+        </g>
+      </pattern>
+      <clipPath id="canopyClip">
+        <circle cx="86" cy="190" r="66"/><circle cx="236" cy="180" r="70"/><circle cx="160" cy="128" r="76"/>
+        <circle cx="120" cy="204" r="52"/><circle cx="202" cy="208" r="52"/>
+        <circle cx="68" cy="156" r="52"/><circle cx="252" cy="148" r="54"/><circle cx="160" cy="94" r="60"/>
+      </clipPath>
+
+      <!-- 감 한 알 -->
+      <g id="fruit">
+        <circle r="15" fill="url(#fruit-shade)"/>
+        <g fill="none" stroke="#9a3c0e" stroke-opacity=".28" stroke-width="1.5"><!-- 네 갈래 골 -->
+          <path d="M-5 -13.5 C-7.5 -5 -7.5 5 -5 13.5"/>
+          <path d="M5 -13.5 C7.5 -5 7.5 5 5 13.5"/>
+        </g>
+        <ellipse cx="-6" cy="-6" rx="4.2" ry="2.6" fill="#fff" opacity=".5" transform="rotate(-35 -6 -6)"/>
+        <circle cx="-3" cy="-9" r="1.2" fill="#fff" opacity=".8"/>
+        <line x1="0" y1="-13" x2="0" y2="-21" stroke="#3e2715" stroke-width="2.4" stroke-linecap="round"/>
+        <g transform="translate(0 -12)">
+          <g fill="#3d6a2c">
+            <path d="M0 0 C-3.2 -3 -3.8 -8 0 -11.5 C3.8 -8 3.2 -3 0 0Z"/>
+            <path d="M0 0 C-3.2 -3 -3.8 -8 0 -11.5 C3.8 -8 3.2 -3 0 0Z" transform="rotate(90)"/>
+            <path d="M0 0 C-3.2 -3 -3.8 -8 0 -11.5 C3.8 -8 3.2 -3 0 0Z" transform="rotate(180)"/>
+            <path d="M0 0 C-3.2 -3 -3.8 -8 0 -11.5 C3.8 -8 3.2 -3 0 0Z" transform="rotate(270)"/>
+          </g>
+          <g fill="none" stroke="#2b4d1f" stroke-width=".8" stroke-opacity=".8">
+            <path d="M0 -1 V-9 M1 0 H9 M0 1 V9 M-1 0 H-9"/>
+          </g>
+          <circle r="2" fill="#2b4d1f"/>
+        </g>
+      </g>
+      <!-- 잎 한 장 -->
+      <g id="leaf">
+        <path d="M0 0 C7 -5 11 -14 0 -24 C-11 -14 -7 -5 0 0Z"/>
+        <path d="M0 -2 L0 -21 M0 -8 L4 -12 M0 -8 L-4 -12 M0 -14 L3.5 -17.5 M0 -14 L-3.5 -17.5" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="1"/>
+      </g>
+      <!-- 잔가지 끝 (잎 몇 장 달린) -->
+      <g id="twig">
+        <path d="M0 0 C10 -4 20 -10 34 -22" fill="none" stroke="#4a2f1b" stroke-width="3" stroke-linecap="round"/>
+        <path d="M16 -8 C18 -14 20 -18 24 -22" fill="none" stroke="#4a2f1b" stroke-width="2" stroke-linecap="round"/>
+        <use href="#leaf" fill="#5c8c3f" transform="translate(34 -22) rotate(35) scale(.85)"/>
+        <use href="#leaf" fill="#7fae52" transform="translate(24 -22) rotate(-25) scale(.75)"/>
+        <use href="#leaf" fill="#c9582a" transform="translate(30 -14) rotate(95) scale(.7)"/>
+      </g>
+      <!-- 밑동 풀포기 -->
+      <g id="tuft" fill="none" stroke="#2f5a3a" stroke-width="2" stroke-linecap="round">
+        <path d="M0 0 C-2 -6 -6 -10 -10 -14"/><path d="M0 0 C0 -7 1 -12 2 -18"/><path d="M0 0 C3 -6 7 -9 12 -12"/><path d="M0 0 C-4 -4 -8 -5 -14 -6"/>
+      </g>
+      <!-- 억새 한 포기 -->
+      <g id="reed">
+        <g fill="none" stroke="#23392f" stroke-width="2.2" stroke-linecap="round">
+          <path d="M40 60 C38 40 30 26 22 14"/>
+          <path d="M40 60 C41 38 44 24 52 10"/>
+          <path d="M40 60 C36 44 24 34 12 30"/>
+          <path d="M40 60 C44 44 56 34 68 30"/>
+          <path d="M40 60 C40 40 40 24 38 6"/>
+        </g>
+        <g fill="#c8b58a" opacity=".85">
+          <ellipse cx="21" cy="12" rx="3" ry="8" transform="rotate(30 21 12)"/>
+          <ellipse cx="53" cy="8" rx="3" ry="8" transform="rotate(-28 53 8)"/>
+          <ellipse cx="38" cy="4" rx="2.6" ry="7"/>
+        </g>
+      </g>
+
+      <symbol id="tree" viewBox="0 0 320 440">
+        <!-- 그림자 -->
+        <ellipse cx="160" cy="437" rx="80" ry="6" fill="#000" opacity=".3"/>
+        <!-- 뿌리와 둥치: 아래로 갈수록 벌어지는 형태 -->
+        <g filter="url(#rough)">
+          <path d="M100 440 C118 432 132 422 138 404 L146 440Z" fill="#2f1c0f"/>
+          <path d="M222 440 C204 432 190 422 182 404 L174 440Z" fill="#2a180b"/>
+          <path d="M134 440 C140 412 146 372 148 332 C150 300 152 284 156 266 L166 266 C170 288 172 306 172 340 C172 380 178 414 190 440 Z" fill="url(#bark)"/>
+        </g>
+        <!-- 가지 -->
+        <g fill="none" stroke="#4a2f1b" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M160 310 C132 285 108 262 78 220" stroke-width="15"/>
+          <path d="M160 300 C190 272 218 250 250 210" stroke-width="15"/>
+          <path d="M160 275 C152 235 143 200 132 160" stroke-width="12"/>
+          <path d="M160 268 C176 232 190 205 208 170" stroke-width="11"/>
+          <path d="M78 220 C68 200 58 185 42 168" stroke-width="8"/>
+          <path d="M250 210 C260 190 270 175 285 158" stroke-width="8"/>
+          <path d="M132 160 C122 140 112 128 100 118" stroke-width="7"/>
+          <path d="M208 170 C215 148 224 132 236 120" stroke-width="7"/>
+          <path d="M100 250 C92 236 84 228 70 222" stroke-width="5"/>
+          <path d="M226 240 C236 226 244 220 258 214" stroke-width="5"/>
+          <path d="M150 210 C140 196 128 188 118 184" stroke-width="4"/>
+          <path d="M176 200 C186 188 196 182 210 178" stroke-width="4"/>
+        </g>
+        <!-- 가지 밝은 면 -->
+        <g fill="none" stroke="#8a6640" stroke-width="2.5" stroke-linecap="round" opacity=".4">
+          <path d="M156 300 C134 280 114 262 90 232"/>
+          <path d="M166 292 C190 268 214 250 242 216"/>
+          <path d="M170 255 C180 235 190 220 200 202"/>
+        </g>
+        <!-- 나무껍질 결 -->
+        <g fill="none" stroke="#2a180b" stroke-width="2" stroke-linecap="round" opacity=".75">
+          <path d="M150 430 C148 400 152 370 149 340"/>
+          <path d="M166 425 C168 395 164 360 167 330"/>
+          <path d="M158 395 C156 380 160 365 158 350"/>
+          <path d="M143 420 C142 400 145 380 144 362"/>
+          <path d="M174 410 C176 392 173 372 175 356"/>
+          <path d="M152 300 C142 290 134 282 124 270"/>
+        </g>
+        <g fill="none" stroke="#9a7449" stroke-width="2.2" stroke-linecap="round" opacity=".5">
+          <path d="M146 420 C144 385 148 345 147 312"/>
+          <path d="M154 380 C153 360 155 340 154 322"/>
+        </g>
+        <ellipse cx="151" cy="362" rx="4.5" ry="6.5" fill="#1f1108"/><!-- 옹이 -->
+        <ellipse cx="151" cy="362" rx="2" ry="3.2" fill="#3e2614"/>
+        <ellipse cx="170" cy="322" rx="3" ry="4.5" fill="#1f1108"/>
+        <!-- 밑동 이끼 -->
+        <g fill="#3f6b3a" opacity=".55">
+          <ellipse cx="142" cy="428" rx="9" ry="4"/><ellipse cx="184" cy="431" rx="11" ry="4.5"/><ellipse cx="160" cy="434" rx="7" ry="3"/>
+        </g>
+
+        <!-- 잎 덩어리 -->
+        <g filter="url(#leafy)">
+          <g fill="#22402a">
+            <circle cx="86" cy="190" r="66"/>
+            <circle cx="236" cy="180" r="70"/>
+            <circle cx="160" cy="128" r="76"/>
+            <circle cx="120" cy="204" r="52"/>
+            <circle cx="202" cy="208" r="52"/>
+          </g>
+          <g fill="#3a6a32">
+            <circle cx="68" cy="156" r="52"/>
+            <circle cx="252" cy="148" r="54"/>
+            <circle cx="160" cy="94" r="60"/>
+            <circle cx="112" cy="124" r="50"/>
+            <circle cx="208" cy="120" r="50"/>
+            <circle cx="152" cy="182" r="46"/>
+          </g>
+          <g fill="#5a8e40">
+            <circle cx="90" cy="118" r="34"/>
+            <circle cx="170" cy="66" r="36"/>
+            <circle cx="242" cy="110" r="30"/>
+            <circle cx="132" cy="152" r="26"/>
+            <circle cx="206" cy="160" r="22"/>
+          </g>
+          <g fill="#84b456" opacity=".8">
+            <circle cx="104" cy="98" r="16"/>
+            <circle cx="182" cy="46" r="16"/>
+            <circle cx="238" cy="88" r="14"/>
+            <circle cx="150" cy="120" r="12"/>
+          </g>
+          <!-- 잎 결·달빛·그늘 (잎 덩어리 모양으로 잘라냄) -->
+          <g clip-path="url(#canopyClip)">
+            <rect x="0" y="0" width="320" height="300" fill="url(#leafTex)"/>
+            <rect x="0" y="0" width="320" height="300" fill="url(#underside)"/>
+            <rect x="0" y="0" width="320" height="300" fill="url(#sheen)"/>
+          </g>
+          <!-- 잎 사이로 보이는 잔가지 -->
+          <g fill="none" stroke="#3a2413" stroke-width="2.5" stroke-linecap="round" opacity=".6">
+            <path d="M120 200 C126 186 134 176 146 166"/>
+            <path d="M200 206 C196 190 190 178 178 168"/>
+            <path d="M84 176 C92 164 100 158 110 150"/>
+            <path d="M236 168 C228 156 220 150 210 144"/>
+          </g>
+        </g>
+        <!-- 가장자리 잎사귀: 초록·올리브·단풍 든 잎 -->
+        <g>
+          <use href="#leaf" fill="#4f8038" transform="translate(28 190) rotate(-60)"/>
+          <use href="#leaf" fill="#5c8c3f" transform="translate(40 128) rotate(-40)"/>
+          <use href="#leaf" fill="#c9582a" transform="translate(60 106) rotate(-20)"/>
+          <use href="#leaf" fill="#7fae52" transform="translate(110 62) rotate(-10)"/>
+          <use href="#leaf" fill="#e08a3a" transform="translate(146 40) rotate(5)"/>
+          <use href="#leaf" fill="#5c8c3f" transform="translate(196 34) rotate(20)"/>
+          <use href="#leaf" fill="#c9582a" transform="translate(238 60) rotate(40)"/>
+          <use href="#leaf" fill="#4f8038" transform="translate(276 96) rotate(60)"/>
+          <use href="#leaf" fill="#7fae52" transform="translate(296 150) rotate(80)"/>
+          <use href="#leaf" fill="#e08a3a" transform="translate(292 210) rotate(120)"/>
+          <use href="#leaf" fill="#3f6b31" transform="translate(224 258) rotate(160)"/>
+          <use href="#leaf" fill="#c9582a" transform="translate(120 260) rotate(-165)"/>
+          <use href="#leaf" fill="#3f6b31" transform="translate(58 246) rotate(-135)"/>
+          <use href="#leaf" fill="#e08a3a" transform="translate(166 240) rotate(175)"/>
+          <use href="#leaf" fill="#5c8c3f" transform="translate(96 168) rotate(-95)"/>
+          <use href="#leaf" fill="#7fae52" transform="translate(222 176) rotate(95)"/>
+          <use href="#leaf" fill="#a5c460" transform="translate(130 80) rotate(-30) scale(.8)"/>
+          <use href="#leaf" fill="#a5c460" transform="translate(206 70) rotate(30) scale(.8)"/>
+          <use href="#leaf" fill="#3f6b31" transform="translate(74 214) rotate(-110) scale(.9)"/>
+          <use href="#leaf" fill="#2f5229" transform="translate(250 226) rotate(130) scale(.9)"/>
+        </g>
+        <!-- 잎 덩어리 밖으로 삐져나온 잔가지 -->
+        <use href="#twig" transform="translate(272 156)"/>
+        <use href="#twig" transform="translate(48 150) scale(-1 1)"/>
+        <use href="#twig" transform="translate(150 52) rotate(-70) scale(.8)"/>
+        <use href="#twig" transform="translate(236 78) rotate(-20) scale(.7)"/>
+        <!-- 감 -->
+        <g class="fruits">
+          <use href="#fruit" transform="translate(56 184)"/>
+          <use href="#fruit" transform="translate(98 220) scale(.9)"/>
+          <use href="#fruit" transform="translate(142 236)"/>
+          <use href="#fruit" transform="translate(196 240) scale(.92)"/>
+          <use href="#fruit" transform="translate(248 210)"/>
+          <use href="#fruit" transform="translate(284 164) scale(.85)"/>
+          <use href="#fruit" transform="translate(44 138) scale(.9)"/>
+          <use href="#fruit" transform="translate(120 100)"/>
+          <use href="#fruit" transform="translate(178 152) scale(1.05)"/>
+          <use href="#fruit" transform="translate(228 80) scale(.9)"/>
+          <use href="#fruit" transform="translate(154 54)"/>
+          <use href="#fruit" transform="translate(88 74) scale(.85)"/>
+          <use href="#fruit" transform="translate(262 124)"/>
+          <use href="#fruit" transform="translate(106 150) scale(.8)"/>
+          <use href="#fruit" transform="translate(200 108) scale(.8)"/>
+          <use href="#fruit" transform="translate(76 244) scale(.75)"/>
+          <use href="#fruit" transform="translate(236 250) scale(.75)"/>
+          <use href="#fruit" transform="translate(146 186) scale(.7)"/>
+        </g>
+        <!-- 감 위로 살짝 걸친 잎 -->
+        <use href="#leaf" fill="#3f6b31" transform="translate(112 108) rotate(-140) scale(.8)"/>
+        <use href="#leaf" fill="#5c8c3f" transform="translate(236 216) rotate(150) scale(.8)"/>
+        <use href="#leaf" fill="#2f5229" transform="translate(170 160) rotate(-20) scale(.7)"/>
+        <!-- 밑동 풀·떨어진 감과 낙엽 -->
+        <use href="#tuft" transform="translate(104 440)"/>
+        <use href="#tuft" transform="translate(222 440) scale(-1 1)"/>
+        <use href="#tuft" transform="translate(84 440) scale(.7)"/>
+        <use href="#leaf" fill="#c9582a" transform="translate(96 436) rotate(-100) scale(.8)"/>
+        <use href="#leaf" fill="#e08a3a" transform="translate(228 438) rotate(80) scale(.7)"/>
+        <use href="#leaf" fill="#a9542a" transform="translate(60 434) rotate(95) scale(.6)"/>
+        <use href="#leaf" fill="#8c4a22" transform="translate(250 436) rotate(-80) scale(.55)"/>
+        <use href="#leaf" fill="#d9a03e" transform="translate(130 438) rotate(120) scale(.5)"/>
+        <use href="#fruit" transform="translate(118 428) scale(.7) rotate(-30)"/>
+        <use href="#fruit" transform="translate(236 430) scale(.65) rotate(40)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="stage">
+    <figure class="tree left" aria-label="감이 주렁주렁 열린 감나무">
+      <svg viewBox="0 0 320 440" role="img"><use href="#tree"/></svg>
+    </figure>
+
+    <section class="greeting">
+      <p class="eyebrow">2026 한가위</p>
+      <h1>즐거운 <em>추석</em> 명절<br>보내세요!</h1>
+      <p class="sub">보름달처럼 넉넉하고<br>잘 익은 감처럼 <b>달콤한 한가위</b> 되시길 바랍니다.</p>
+    </section>
+
+    <figure class="tree right" aria-hidden="true">
+      <svg viewBox="0 0 320 440"><use href="#tree"/></svg>
+    </figure>
+  </main>
+
+  <div class="ground" aria-hidden="true">
+    <svg class="hills" viewBox="0 0 1200 140" preserveAspectRatio="none">
+      <path d="M0 70 C200 20 380 110 600 60 C820 10 1000 90 1200 40 L1200 140 L0 140 Z" fill="#1f3331"/>
+      <path d="M0 70 C200 20 380 110 600 60 C820 10 1000 90 1200 40" fill="none" stroke="#2c4a42" stroke-width="3"/>
+      <path d="M0 105 C250 70 450 130 700 95 C900 68 1050 120 1200 90 L1200 140 L0 140 Z" fill="#132120"/>
+      <path d="M0 105 C250 70 450 130 700 95 C900 68 1050 120 1200 90" fill="none" stroke="#1d312d" stroke-width="3"/>
+    </svg>
+    <!-- 언덕 소품: 풀결, 오솔길, 볏단, 바위, 돌탑 -->
+    <svg class="props" viewBox="0 0 1200 140" preserveAspectRatio="none">
+      <!-- 오솔길 -->
+      <path d="M1200 120 C1000 118 900 100 760 112 C640 122 560 96 420 108 C300 118 180 104 0 116" fill="none" stroke="#2b3f3a" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+      <path d="M1200 120 C1000 118 900 100 760 112 C640 122 560 96 420 108 C300 118 180 104 0 116" fill="none" stroke="#3a524a" stroke-width="2" stroke-dasharray="6 10" opacity=".5"/>
+    </svg>
+    <svg class="props" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMax meet" style="height:100%">
+      <!-- 풀결 -->
+      <g fill="none" stroke="#2c4a42" stroke-width="1.4" stroke-linecap="round" opacity=".7">
+        <path d="M60 64 l3 -8 M66 62 l4 -7 M140 58 l3 -8 M146 56 l4 -6 M230 70 l3 -8 M236 68 l4 -7 M330 62 l3 -9 M336 60 l4 -6 M500 60 l3 -8 M506 58 l4 -7 M560 70 l3 -8 M700 66 l3 -8 M706 64 l4 -7 M880 60 l3 -8 M886 58 l4 -7 M1000 66 l3 -9 M1006 64 l4 -6 M1100 58 l3 -8 M1106 56 l4 -7"/>
+      </g>
+      <!-- 볏단 -->
+      <g>
+        <path d="M150 96 C154 74 160 62 168 56 C176 62 182 74 186 96Z" fill="#8a7a3c"/>
+        <path d="M156 84 H180" stroke="#5c4f22" stroke-width="3"/>
+        <path d="M160 92 C162 76 165 66 168 60 M172 92 C171 76 170 66 168 60 M180 92 C176 76 172 66 168 60" fill="none" stroke="#6e6130" stroke-width="1"/>
+        <path d="M194 96 C197 80 201 70 208 64 C215 70 219 80 222 96Z" fill="#7f7036"/>
+        <path d="M199 86 H217" stroke="#5c4f22" stroke-width="2.5"/>
+        <path d="M120 96 C123 82 126 74 131 70 C136 74 139 82 142 96Z" fill="#7a6c34"/>
+        <path d="M124 88 H138" stroke="#5c4f22" stroke-width="2.5"/>
+      </g>
+      <!-- 바위 -->
+      <g fill="#213631">
+        <path d="M300 98 C298 88 306 82 316 84 C326 86 330 92 328 98Z"/>
+        <path d="M330 98 C330 92 336 88 342 90 C348 92 350 96 348 98Z"/>
+        <path d="M980 100 C980 90 990 84 1002 86 C1012 88 1016 94 1014 100Z"/>
+      </g>
+      <g fill="#2f4a43" opacity=".7"><path d="M302 92 C306 86 314 85 320 88 L318 91 C312 89 306 90 304 93Z"/><path d="M984 94 C990 88 998 87 1006 90 L1004 93 C998 91 990 92 986 95Z"/></g>
+      <!-- 돌탑 -->
+      <g fill="#1b2d29">
+        <ellipse cx="420" cy="98" rx="12" ry="3.5"/><ellipse cx="420" cy="93" rx="9" ry="3"/><ellipse cx="421" cy="88.5" rx="7" ry="2.6"/><ellipse cx="420" cy="84.5" rx="5.2" ry="2.2"/><ellipse cx="420.5" cy="81" rx="3.5" ry="1.8"/>
+      </g>
+    </svg>
+    <!-- 불 켜진 기와집 -->
+    <svg class="hanok" viewBox="0 0 240 124">
+      <defs>
+        <linearGradient id="winGlow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#f0b45a"/>
+        </linearGradient>
+        <pattern id="lattice" width="7" height="8" patternUnits="userSpaceOnUse">
+          <path d="M0 0 H7 M0 0 V8" fill="none" stroke="#1a1208" stroke-width="1.2"/>
+        </pattern>
+      </defs>
+      <!-- 창문 불빛이 마당에 번짐 -->
+      <ellipse cx="128" cy="116" rx="96" ry="9" fill="#f7c66b" opacity=".09"/>
+      <!-- 장독대 -->
+      <g fill="#0b1210">
+        <rect x="2" y="104" width="34" height="6" rx="1" fill="#151f1b"/>
+        <path d="M6 104 C3 96 4 86 10 84 C16 86 17 96 14 104Z"/><ellipse cx="10" cy="84" rx="4.5" ry="1.6"/>
+        <path d="M17 104 C13 94 14 82 22 80 C30 82 31 94 27 104Z"/><ellipse cx="22" cy="80" rx="5.5" ry="1.8"/>
+        <path d="M29 104 C27 98 28 90 33 88 C38 90 39 98 37 104Z"/><ellipse cx="33" cy="88" rx="3.8" ry="1.4"/>
+      </g>
+      <!-- 굴뚝과 연기 -->
+      <rect x="196" y="14" width="9" height="30" fill="#0b1210"/>
+      <rect x="194" y="12" width="13" height="3.5" rx="1" fill="#0b1210"/>
+      <g class="smoke" fill="#cfd6e6">
+        <circle cx="200" cy="8" r="3"/><circle cx="203" cy="1" r="4"/><circle cx="199" cy="-7" r="5"/>
+      </g>
+      <!-- 기단(돌 기초)과 댓돌 -->
+      <rect x="34" y="100" width="180" height="10" fill="#0e1714"/>
+      <path d="M34 105 H214 M70 100 V110 M110 100 V110 M150 100 V110 M190 100 V110" stroke="#182420" stroke-width="1"/>
+      <rect x="112" y="104" width="30" height="6" rx="1" fill="#1b2824"/>
+      <!-- 툇마루 -->
+      <rect x="40" y="94" width="168" height="6" fill="#1c1510"/>
+      <path d="M40 97 H208" stroke="#2a2018" stroke-width="1"/>
+      <!-- 벽 -->
+      <rect x="42" y="52" width="164" height="42" fill="#0f1a17"/>
+      <!-- 창호: 격자문 -->
+      <g class="win">
+        <rect x="88" y="58" width="30" height="30" rx="1" fill="url(#winGlow)"/>
+        <rect x="88" y="58" width="30" height="30" rx="1" fill="url(#lattice)"/>
+        <rect x="128" y="58" width="24" height="36" rx="1" fill="url(#winGlow)"/><!-- 대청 문 -->
+        <rect x="128" y="58" width="24" height="36" rx="1" fill="url(#lattice)"/>
+        <rect x="166" y="58" width="30" height="30" rx="1" fill="url(#winGlow)"/>
+        <rect x="166" y="58" width="30" height="30" rx="1" fill="url(#lattice)"/>
+      </g>
+      <g fill="none" stroke="#1a1208" stroke-width="1.6">
+        <rect x="88" y="58" width="30" height="30" rx="1"/><rect x="128" y="58" width="24" height="36" rx="1"/><rect x="166" y="58" width="30" height="30" rx="1"/>
+        <path d="M140 58 V94 M128 76 H152"/>
+      </g>
+      <!-- 처마 밑 곶감 말리기 -->
+      <g class="gotgam">
+        <g stroke="#3a2a14" stroke-width=".8" fill="#d9772e">
+          <path d="M54 52 V86" fill="none"/>
+          <circle cx="54" cy="60" r="2.6"/><circle cx="54" cy="67" r="2.6"/><circle cx="54" cy="74" r="2.6"/><circle cx="54" cy="81" r="2.6"/>
+          <path d="M64 52 V86" fill="none"/>
+          <circle cx="64" cy="61" r="2.6"/><circle cx="64" cy="68" r="2.6"/><circle cx="64" cy="75" r="2.6"/><circle cx="64" cy="82" r="2.6"/>
+          <path d="M74 52 V80" fill="none"/>
+          <circle cx="74" cy="60" r="2.6"/><circle cx="74" cy="67" r="2.6"/><circle cx="74" cy="74" r="2.6"/>
+        </g>
+      </g>
+      <!-- 기둥 -->
+      <g fill="#070b09">
+        <rect x="42" y="50" width="5" height="46"/><rect x="82" y="50" width="5" height="46"/><rect x="121" y="50" width="5" height="46"/><rect x="159" y="50" width="5" height="46"/><rect x="200" y="50" width="5" height="46"/>
+      </g>
+      <!-- 지붕: 처마 끝이 살짝 들린 기와지붕 -->
+      <path d="M22 54 Q124 70 226 54 L204 28 Q124 36 44 28 Z" fill="#0b1210"/>
+      <g fill="none" stroke="#1a2622" stroke-width=".9" opacity=".9"><!-- 기와 골 -->
+        <path d="M34 44 Q124 56 214 44"/><path d="M28 50 Q124 63 220 50"/><path d="M40 37 Q124 47 208 37"/>
+        <path d="M60 30 L48 54 M80 33 L72 57 M100 35 L96 60 M124 36 V62 M148 35 L152 60 M168 33 L176 57 M188 30 L200 54"/>
+      </g>
+      <path d="M44 28 Q124 36 204 28" fill="none" stroke="#050807" stroke-width="4.5" stroke-linecap="round"/><!-- 용마루 -->
+      <circle cx="44" cy="28" r="3.2" fill="#050807"/><circle cx="204" cy="28" r="3.2" fill="#050807"/><!-- 망와 -->
+      <path d="M22 54 Q124 70 226 54" fill="none" stroke="#1c1510" stroke-width="2"/><!-- 처마 서까래 -->
+      <g stroke="#1c1510" stroke-width="1.4"><path d="M32 55 v3 M44 57 v3 M56 58 v3 M68 59 v3 M80 60 v3 M92 61 v3 M104 61.5 v3 M116 62 v3 M128 62 v3 M140 61.8 v3 M152 61.4 v3 M164 60.8 v3 M176 60 v3 M188 59 v3 M200 58 v3 M212 56.5 v3"/></g>
+      <!-- 처마 끝 청사초롱 -->
+      <g class="lantern">
+        <path d="M214 58 V64" stroke="#1c1510" stroke-width="1"/>
+        <rect x="209" y="64" width="10" height="13" rx="2.5" fill="#e0553a"/>
+        <rect x="209" y="70" width="10" height="4" fill="#3d6ab0"/>
+        <rect x="208" y="63" width="12" height="2" rx="1" fill="#2a1a0a"/><rect x="208" y="76" width="12" height="2" rx="1" fill="#2a1a0a"/>
+        <path d="M214 78 V84" stroke="#e0553a" stroke-width="1.2"/>
+        <circle cx="214" cy="70.5" r="9" fill="#ffb37a" opacity=".18"/>
+      </g>
+    </svg>
+    <div class="grass">
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+      <svg viewBox="0 0 80 60"><use href="#reed"/></svg>
+    </div>
+  </div>
+  <div class="drops" id="drops" aria-hidden="true"></div>
+  <div class="fireflies" id="fireflies" aria-hidden="true"></div>
+</div>
+
+<script>
+(function(){
+  var stars=document.getElementById('stars');
+  var frag=document.createDocumentFragment();
+  for(var i=0;i<110;i++){
+    var s=document.createElement('span');
+    var r=Math.random();
+    s.className='star'+(r<.05?' spark':r<.18?' big':r<.3?' warm':r<.42?' cool':'');
+    s.style.left=(Math.random()*100).toFixed(2)+'%';
+    s.style.top=(Math.random()*60).toFixed(2)+'%';
+    s.style.setProperty('--d',(3+Math.random()*4).toFixed(2)+'s');
+    s.style.setProperty('--delay',(-Math.random()*6).toFixed(2)+'s');
+    frag.appendChild(s);
+  }
+  stars.appendChild(frag);
+
+  var flies=document.getElementById('fireflies');
+  var f2=document.createDocumentFragment();
+  for(var j=0;j<16;j++){
+    var f=document.createElement('span');
+    f.className='fly';
+    // 나무와 풀숲 주변(화면 아래쪽)에만
+    var left=Math.random()<.5?Math.random()*30:70+Math.random()*30;
+    f.style.left=left.toFixed(2)+'%';
+    f.style.top=(58+Math.random()*32).toFixed(2)+'%';
+    f.style.setProperty('--t',(7+Math.random()*6).toFixed(2)+'s');
+    f.style.setProperty('--delay',(-Math.random()*10).toFixed(2)+'s');
+    f.style.setProperty('--dx',((Math.random()-.5)*40).toFixed(0)+'px');
+    f2.appendChild(f);
+  }
+  flies.appendChild(f2);
+
+  /* 감 떨어지기: 두 나무에서 번갈아 한 알씩 */
+  var drops=document.getElementById('drops');
+  var trees=document.querySelectorAll('.tree svg');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var SVG='http://www.w3.org/2000/svg', XL='http://www.w3.org/1999/xlink';
+  function dropOne(){
+    if(reduce.matches||document.hidden||!trees.length) return;
+    var tree=trees[Math.floor(Math.random()*trees.length)];
+    var r=tree.getBoundingClientRect();
+    if(r.width<20) return;
+    var unit=r.width/320;                     // 심볼 좌표 1단위 = 몇 px
+    var size=44*unit;
+    var x=r.left+(60+Math.random()*200)*unit; // 잎 덩어리 안쪽
+    var y=r.top+(60+Math.random()*150)*unit;
+    var groundY=r.top+426*unit;               // 나무 밑동 높이
+    var el=document.createElementNS(SVG,'svg');
+    el.setAttribute('class','drop');
+    el.setAttribute('viewBox','-22 -24 44 44');
+    el.style.width=el.style.height=size+'px';
+    el.style.left=(x-size/2)+'px';
+    el.style.top=(y-size/2)+'px';
+    el.style.setProperty('--fall',(groundY-y)+'px');
+    el.style.setProperty('--bounce',(8+Math.random()*10)*unit+'px');
+    el.style.setProperty('--rot',((Math.random()<.5?-1:1)*(120+Math.random()*160)).toFixed(0)+'deg');
+    var use=document.createElementNS(SVG,'use');
+    use.setAttribute('href','#fruit');
+    use.setAttributeNS(XL,'xlink:href','#fruit');
+    el.appendChild(use);
+    drops.appendChild(el);
+    // 땅에 닿을 때 흙먼지
+    setTimeout(function(){
+      var pf=document.createElement('span');
+      pf.className='puff';
+      pf.style.left=(x-5)+'px';
+      pf.style.top=(groundY+6*unit)+'px';
+      drops.appendChild(pf);
+      pf.addEventListener('animationend',function(){pf.remove();});
+    },2400*.62);
+    el.addEventListener('animationend',function(){el.remove();});
+  }
+  function schedule(){
+    setTimeout(function(){dropOne();schedule();},2200+Math.random()*3000);
+  }
+  setTimeout(function(){dropOne();schedule();},1500);
+})();
+</script>
+</body>
+</html>
